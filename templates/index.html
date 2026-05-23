@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>노래 추천 프로그램</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header>
+        <div class="logo" onclick="showPage('home')">🎧 노래 추천 프로그램</div>
+
+        <div class="current-page-box">
+            현재 위치: <span id="currentPageName">홈</span>
+        </div>
+    </header>
+
+    <section id="home" class="page active">
+        <div class="home-box">
+            <h1>오늘 듣기 좋은 노래를 찾아보세요</h1>
+            <p>곡 목록을 둘러보거나, 지금 기분과 상황에 맞는 노래를 추천받을 수 있습니다.</p>
+
+            <div class="home-menu">
+                <div class="home-card" onclick="showPage('list')">곡 목록</div>
+                <div class="home-card" onclick="showPage('language')">언어별 탐색</div>
+                <div class="home-card" onclick="showPage('genre')">장르별 탐색</div>
+                <div class="home-card" onclick="showPage('era')">시대별 탐색</div>
+            </div>
+
+            <button class="recommend-main-btn" onclick="showPage('recommend')">🎧 곡 추천받기</button>
+        </div>
+    </section>
+
+    <section id="list" class="page">
+        <div class="page-title">
+            <h2>곡 목록</h2>
+            <p>현재 등록된 전체 노래 목록입니다.</p>
+        </div>
+
+        <div id="allSongList" class="song-list"></div>
+    </section>
+
+    <section id="language" class="page">
+        <div class="page-title">
+            <h2>언어별 탐색</h2>
+            <p>언어를 선택하면 해당 노래 목록이 표시됩니다.</p>
+        </div>
+
+        <div class="filter-buttons">
+            <button onclick="filterSongs('language', 'KPOP', this)">KPOP</button>
+            <button onclick="filterSongs('language', 'POP', this)">POP</button>
+            <button onclick="filterSongs('language', '기타', this)">기타</button>
+        </div>
+
+        <div id="languageSongList" class="song-list"></div>
+    </section>
+
+    <section id="genre" class="page">
+        <div class="page-title">
+            <h2>장르별 탐색</h2>
+            <p>장르를 선택하면 해당 노래 목록이 표시됩니다.</p>
+        </div>
+
+        <div class="filter-buttons">
+            <button onclick="filterSongs('genre', '일렉트로닉', this)">일렉트로닉</button>
+            <button onclick="filterSongs('genre', '발라드', this)">발라드</button>
+            <button onclick="filterSongs('genre', '댄스', this)">댄스</button>
+            <button onclick="filterSongs('genre', '록', this)">록</button>
+            <button onclick="filterSongs('genre', '힙합', this)">힙합</button>
+            <button onclick="filterSongs('genre', '팝', this)">팝</button>
+            <button onclick="filterSongs('genre', 'R&B', this)">R&B</button>
+        </div>
+
+        <div id="genreSongList" class="song-list"></div>
+    </section>
+
+    <section id="era" class="page">
+        <div class="page-title">
+            <h2>시대별 탐색</h2>
+            <p>시대를 선택하면 해당 노래 목록이 표시됩니다.</p>
+        </div>
+
+        <div class="filter-buttons">
+            <button onclick="filterSongs('era', '2020년대', this)">2020년대</button>
+            <button onclick="filterSongs('era', '2010년대', this)">2010년대</button>
+            <button onclick="filterSongs('era', '2000년대', this)">2000년대</button>
+            <button onclick="filterSongs('era', '1990년대 이전', this)">1990년대 이전</button>
+        </div>
+
+        <div id="eraSongList" class="song-list"></div>
+    </section>
+
+    <section id="recommend" class="page">
+        <div class="recommend-box">
+            <h2>오늘, 어떤 기분인가요?</h2>
+            <p class="sub-text">당신의 순간에 어울리는 음악을 추천해드릴게요.</p>
+
+            <div class="mood-grid">
+                <button class="mood-card" onclick="selectMood('평온해요', this)">
+                    <span class="emoji">☁️</span>
+                    평온해요
+                </button>
+
+                <button class="mood-card" onclick="selectMood('우울해요', this)">
+                    <span class="emoji">😶‍🌫️</span>
+                    우울해요
+                </button>
+
+                <button class="mood-card" onclick="selectMood('설레요', this)">
+                    <span class="emoji">💗</span>
+                    설레요
+                </button>
+
+                <button class="mood-card" onclick="selectMood('신나요', this)">
+                    <span class="emoji">😄</span>
+                    신나요
+                </button>
+
+                <button class="mood-card" onclick="selectMood('지쳤어요', this)">
+                    <span class="emoji">🥲</span>
+                    지쳤어요
+                </button>
+            </div>
+
+            <div class="question-title">지금 어떤 상황인가요?</div>
+
+            <div class="situation-buttons">
+                <button onclick="selectSituation('공부 / 작업', this)">공부 / 작업</button>
+                <button onclick="selectSituation('산책 / 운동', this)">산책 / 운동</button>
+                <button onclick="selectSituation('이동 중', this)">이동 중</button>
+                <button onclick="selectSituation('집 / 휴식', this)">집 / 휴식</button>
+                <button onclick="selectSituation('기타', this)">기타</button>
+            </div>
+
+            <div class="question-title">지금 에너지는 어느 정도인가요?</div>
+
+            <div class="energy-area">
+                <span>낮음</span>
+
+                <div class="energy-slider-wrap">
+                    <input id="energyRange" type="range" min="0" max="100" value="50" oninput="updateEnergyBar()">
+                    <div class="energy-value">
+                        에너지 <span id="energyValue">50</span>%
+                    </div>
+                </div>
+
+                <span>높음</span>
+            </div>
+
+            <div class="weather-time">
+                <div class="info-box">
+                    <div class="info-label">날씨</div>
+                    <div id="weatherText" class="info-value">불러오는 중...</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-label">시간</div>
+                    <div id="timeText" class="info-value">불러오는 중...</div>
+                </div>
+            </div>
+
+            <button class="recommend-btn" onclick="recommendSongs()">추천받기 ✨</button>
+        </div>
+
+        <div id="recommendResult" class="recommend-result"></div>
+    </section>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
