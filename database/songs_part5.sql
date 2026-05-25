@@ -1,12 +1,6 @@
 USE music_db;
 
-INSERT INTO songs (
-    title,
-    artist,
-    language_type,
-    genre,
-    era,
-    mood,
+INSERT INTO songs (title, artist, language_type, genre, era, mood,
     youtube_link,
     melon_link,
     apple_music_link,
