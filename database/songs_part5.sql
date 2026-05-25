@@ -1,11 +1,6 @@
 USE music_db;
 
-INSERT INTO songs (title, artist, language_type, genre, era, mood,
-    youtube_link,
-    melon_link,
-    apple_music_link,
-    spotify_link
-)
+INSERT INTO songs (title, artist, language_type, genre, era, mood, youtube_link, melon_link, apple_music_link, spotify_link)
 VALUES
 ('Bad', 'Christopher', 'POP', 'R&B', '2010년대', '강렬함', 'https://youtu.be/ACiyYOz0wsQ?si=8AnSugUhgwguSfSM', 'https://www.melon.com/song/detail.htm?songId=31012145', 'https://music.apple.com/kr/song/bad/1484661367', 'https://open.spotify.com/search/BadChristopher?flow_ctx=464698ab-5261-4d88-bcc9-3eb26e403b9f%3A1775431061'),
 ('Love Blossom', '케이윌 (K.will)', 'KPOP', '발라드', '2010년대', '밝음', 'https://youtu.be/iRGOb6aKcgw?si=lPAvoZd8TaVS6Ft_', 'https://www.melon.com/song/detail.htm?songId=4076051', 'https://music.apple.com/kr/song/love-blossom/631909025', 'https://open.spotify.com/track/3z9s9hp6ouAxH0IUojkC6L'),
