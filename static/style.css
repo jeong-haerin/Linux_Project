@@ -424,3 +424,30 @@ input[type="range"]::-webkit-slider-thumb:hover {
         grid-template-columns: 1fr;
     }
 }
+
+
+.song-card {
+    display: block;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+.song-card h3 {
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.song-info {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.song-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.song-links a {
+    display: inline-block;
+}
