@@ -226,8 +226,11 @@ function showSongs(targetId, songArray) {
         html += `
             <div class="song-card">
                 <h3>${song.title} - ${song.artist}</h3>
-                <p>${song.language} / ${song.genre} / ${song.era} / ${song.mood}</p>
-                <span>${song.genre} ${song.mood}</span>
+
+                <p class="song-info">
+                    ${song.language} / ${song.genre} / ${song.era} / ${song.mood}
+                </p>
+
                 <div class="song-links">
                     ${song.youtube_link ? `<a href="${song.youtube_link}" target="_blank">YouTube</a>` : ""}
                     ${song.melon_link ? `<a href="${song.melon_link}" target="_blank">Melon</a>` : ""}
