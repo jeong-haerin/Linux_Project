@@ -1,7 +1,6 @@
 USE music_db;
 
-INSERT INTO songs
-(title, artist, language_type, genre, era, mood, youtube_link, melon_link, apple_music_link, spotify_link)
+INSERT INTO songs (title, artist, language_type, genre, era, mood, youtube_link, melon_link, apple_music_link, spotify_link)
 VALUES
 ('Reply To This', 'Charlie Puth', 'POP', '팝', '2020년대', '몽환적', 'https://youtu.be/JZOr_ZDGtOU?si=JAc0GVzZ0hgzuGry', 'https://www.melon.com/song/detail.htm?songId=601689834#', 'https://music.apple.com/kr/album/reply-to-this/1888624679?i=1888625007', 'https://open.spotify.com/track/3ytuqgUI0BNCDijjxC6jZg'),
 ('Die For You', 'VALORANT, Grabbitz (Ultra Empire Music)', 'POP', '일렉트로닉', '2020년대', '강렬함', 'https://www.youtube.com/watch?v=h7MYJghRWt0&list=RDh7MYJghRWt0&start_radio=1', 'https://www.melon.com/song/detail.htm?songId=37986044', 'https://found.ee/dieforyou-applemusic', 'https://found.ee/dieforyou-spotify'),
