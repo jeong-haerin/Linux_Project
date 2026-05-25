@@ -256,18 +256,17 @@ function filterSongs(category, value, clickedButton) {
 
     let result = [];
 
-    if (category === "era" && value === "이전") {
-        result = songs.filter(function(song) {
-            return song.era !== "2020년대" &&
-                   song.era !== "2010년대" &&
-                   song.era !== "2000년대" &&
-                   song.era !== "1990년대";
-        });
-    } else {
-        result = songs.filter(function(song) {
-            return song[category] === value;
-        });
-    }
+    if (category === "era" && (value === "이전" || value === "1990년대 이전")) {
+    result = songs.filter(function(song) {
+        return song.era !== "2020년대" &&
+               song.era !== "2010년대" &&
+               song.era !== "2000년대";
+    });
+} else {
+    result = songs.filter(function(song) {
+        return song[category] === value;
+    });
+}
 
     if (category === "language") {
         showSongs("languageSongList", result);
