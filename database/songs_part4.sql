@@ -1,7 +1,6 @@
 USE music_db;
 
-INSERT INTO songs
-(title, artist, language_type, genre, era, mood, youtube_link, melon_link, apple_music_link, spotify_link)
+INSERT INTO songs (title, artist, language_type, genre, era, mood, youtube_link, melon_link, apple_music_link, spotify_link)
 VALUES
 ('Attention', 'NewJeans', 'KPOP', '팝', '2020년대', '밝음', 'https://youtu.be/js1CtxSY38I?si=Yw1GELxXJD9-1Pti', 'https://www.melon.com/song/detail.htm?songId=35454425', 'https://music.apple.com/kr/song/attention/1635469694', 'https://open.spotify.com/track/2pIUpMhHL6L9Z5lnKxJJr9'),
 ('Ghost', 'Justin Bieber', 'POP', '팝', '2020년대', '애절함', 'https://youtu.be/Fp8msa5uYsc?si=4aQ0fqq1rDQ_a2ZU', 'https://www.melon.com/song/detail.htm?songId=33359316', 'https://music.apple.com/kr/song/ghost/1556170100', 'https://open.spotify.com/track/6I3mqTwhRpn34SLVafSH7G'),
