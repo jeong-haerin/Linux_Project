@@ -1,24 +1,181 @@
-const songs = [
-    { title: "심야영화", artist: "하현상", language: "KPOP", genre: "일렉트로닉", era: "2020년대", mood: "몽환적" },
-    { title: "너란 바람 따라", artist: "IKON", language: "KPOP", genre: "발라드", era: "2020년대", mood: "애절함" },
-    { title: "幾分之幾", artist: "盧廣仲", language: "기타", genre: "발라드", era: "2010년대", mood: "애절함" },
-    { title: "Te Quiero", artist: "KISS OF LIFE", language: "KPOP", genre: "댄스", era: "2020년대", mood: "몽환적" },
-    { title: "혜성", artist: "윤하", language: "KPOP", genre: "록", era: "2000년대", mood: "강렬함" },
-    { title: "OUTSIDE", artist: "ENHYPEN", language: "KPOP", genre: "힙합", era: "2020년대", mood: "서정적" },
-    { title: "이제 안녕", artist: "조유리", language: "KPOP", genre: "팝", era: "2020년대", mood: "서정적" },
-    { title: "기억을 걷는 시간", artist: "넬", language: "KPOP", genre: "발라드", era: "2000년대", mood: "애절함" },
-    { title: "This Love", artist: "BIGBANG", language: "KPOP", genre: "힙합", era: "2000년대", mood: "애절함" },
-    { title: "쏟아져오는 바람처럼", artist: "도영", language: "KPOP", genre: "발라드", era: "2020년대", mood: "밝음" },
-    { title: "20", artist: "세븐틴", language: "KPOP", genre: "댄스", era: "2010년대", mood: "밝음" },
-    { title: "다시 사랑할 수 있을까", artist: "그리즐리", language: "KPOP", genre: "록", era: "2020년대", mood: "애절함" },
-    { title: "nostalgia", artist: "우디", language: "KPOP", genre: "일렉트로닉", era: "2020년대", mood: "서정적" }
-];
+let songs = [];
 
 let selectedMood = "";
 let selectedSituation = "";
 let currentWeather = "알 수 없음";
 let currentTemperature = "";
 let currentHour = new Date().getHours();
+
+const sqlFileUrls = [
+    "/database/songs.sql"
+];
+
+function normalizeLanguage(languageType) {
+    if (languageType === "KPOP") {
+        return "KPOP";
+    }
+
+    if (languageType === "POP") {
+        return "POP";
+    }
+
+    return "기타";
+}
+
+function normalizeGenre(genre) {
+    if (genre === "락") {
+        return "록";
+    }
+
+    if (genre === "알앤비") {
+        return "R&B";
+    }
+
+    if (genre === "댄") {
+        return "댄스";
+    }
+
+    return genre;
+}
+
+function normalizeMood(mood) {
+    if (mood === "밝고 경쾌") {
+        return "밝음";
+    }
+
+    if (mood === "쓸쓸함" || mood === "아련함" || mood === "외로움") {
+        return "애절함";
+    }
+
+    if (mood === "몽환적, 나른") {
+        return "몽환적";
+    }
+
+    return mood;
+}
+
+function parseSqlValues(sqlText) {
+    const valuesIndex = sqlText.indexOf("VALUES");
+
+    if (valuesIndex === -1) {
+        return [];
+    }
+
+    const valuesText = sqlText.slice(valuesIndex + 6);
+    const rows = [];
+
+    let row = null;
+    let value = "";
+    let inQuote = false;
+
+    for (let i = 0; i < valuesText.length; i++) {
+        const char = valuesText[i];
+        const nextChar = valuesText[i + 1];
+
+        if (char === "'") {
+            if (inQuote && nextChar === "'") {
+                value += "'";
+                i++;
+            } else {
+                inQuote = !inQuote;
+            }
+            continue;
+        }
+
+        if (row === null) {
+            if (char === "(") {
+                row = [];
+                value = "";
+            }
+            continue;
+        }
+
+        if (inQuote) {
+            value += char;
+            continue;
+        }
+
+        if (char === ",") {
+            row.push(value.trim());
+            value = "";
+            continue;
+        }
+
+        if (char === ")") {
+            row.push(value.trim());
+
+            if (row.length >= 10) {
+                rows.push(row.slice(0, 10));
+            }
+
+            row = null;
+            value = "";
+            continue;
+        }
+
+        value += char;
+    }
+
+    return rows;
+}
+
+function convertRowToSong(row) {
+    const languageType = row[2];
+    const genre = normalizeGenre(row[3]);
+    const mood = normalizeMood(row[5]);
+
+    return {
+        title: row[0],
+        artist: row[1],
+        originalLanguage: languageType,
+        language: normalizeLanguage(languageType),
+        genre: genre,
+        era: row[4],
+        mood: mood,
+        youtube_link: row[6],
+        melon_link: row[7],
+        apple_music_link: row[8],
+        spotify_link: row[9]
+    };
+}
+
+function loadSongsFromSql() {
+    const allSongList = document.getElementById("allSongList");
+
+    if (allSongList) {
+        allSongList.innerHTML = "<p>노래 목록을 불러오는 중입니다.</p>";
+    }
+
+    Promise.all(
+        sqlFileUrls.map(function(url) {
+            return fetch(url).then(function(response) {
+                return response.text();
+            });
+        })
+    )
+        .then(function(sqlTexts) {
+            let loadedSongs = [];
+
+            sqlTexts.forEach(function(sqlText) {
+                const rows = parseSqlValues(sqlText);
+
+                rows.forEach(function(row) {
+                    loadedSongs.push(convertRowToSong(row));
+                });
+            });
+
+            songs = loadedSongs;
+
+            showSongs("allSongList", songs);
+        })
+        .catch(function(error) {
+            console.log("SQL 파일을 불러오지 못했습니다.", error);
+
+            if (allSongList) {
+                allSongList.innerHTML = "<p>노래 데이터를 불러오지 못했습니다.</p>";
+            }
+        });
+}
 
 function showPage(pageId) {
     const pages = document.querySelectorAll(".page");
@@ -54,8 +211,12 @@ function showPage(pageId) {
 function showSongs(targetId, songArray) {
     const target = document.getElementById(targetId);
 
+    if (!target) {
+        return;
+    }
+
     if (songArray.length === 0) {
-        target.innerHTML = "<p style='text-align:center;'>해당 조건의 노래가 없습니다.</p>";
+        target.innerHTML = "<p>해당 조건의 노래가 없습니다.</p>";
         return;
     }
 
@@ -64,15 +225,14 @@ function showSongs(targetId, songArray) {
     songArray.forEach(function(song) {
         html += `
             <div class="song-card">
-                <div>
-                    <div class="song-title">${song.title} - ${song.artist}</div>
-                    <div class="song-info">
-                        ${song.language} / ${song.genre} / ${song.era} / ${song.mood}
-                    </div>
-                </div>
-                <div>
-                    <span class="tag">${song.genre}</span>
-                    <span class="tag">${song.mood}</span>
+                <h3>${song.title} - ${song.artist}</h3>
+                <p>${song.language} / ${song.genre} / ${song.era} / ${song.mood}</p>
+                <span>${song.genre} ${song.mood}</span>
+                <div class="song-links">
+                    ${song.youtube_link ? `<a href="${song.youtube_link}" target="_blank">YouTube</a>` : ""}
+                    ${song.melon_link ? `<a href="${song.melon_link}" target="_blank">Melon</a>` : ""}
+                    ${song.apple_music_link ? `<a href="${song.apple_music_link}" target="_blank">Apple Music</a>` : ""}
+                    ${song.spotify_link ? `<a href="${song.spotify_link}" target="_blank">Spotify</a>` : ""}
                 </div>
             </div>
         `;
@@ -91,9 +251,20 @@ function filterSongs(category, value, clickedButton) {
 
     clickedButton.classList.add("selected");
 
-    const result = songs.filter(function(song) {
-        return song[category] === value;
-    });
+    let result = [];
+
+    if (category === "era" && value === "이전") {
+        result = songs.filter(function(song) {
+            return song.era !== "2020년대" &&
+                   song.era !== "2010년대" &&
+                   song.era !== "2000년대" &&
+                   song.era !== "1990년대";
+        });
+    } else {
+        result = songs.filter(function(song) {
+            return song[category] === value;
+        });
+    }
 
     if (category === "language") {
         showSongs("languageSongList", result);
@@ -132,10 +303,13 @@ function updateEnergyBar() {
     const energyRange = document.getElementById("energyRange");
     const energyValue = document.getElementById("energyValue");
 
+    if (!energyRange || !energyValue) {
+        return;
+    }
+
     const value = energyRange.value;
 
     energyValue.innerText = value;
-
     energyRange.style.background = `linear-gradient(to right, #7b70d7 ${value}%, #e4e0f2 ${value}%)`;
 }
 
@@ -149,7 +323,11 @@ function updateTime() {
         minute: "2-digit"
     });
 
-    document.getElementById("timeText").innerText = timeString;
+    const timeText = document.getElementById("timeText");
+
+    if (timeText) {
+        timeText.innerText = timeString;
+    }
 }
 
 setInterval(updateTime, 1000);
@@ -162,6 +340,7 @@ function weatherCodeToText(code) {
     if (code >= 71 && code <= 77) return "눈";
     if (code >= 80 && code <= 82) return "소나기";
     if (code >= 95) return "천둥";
+
     return "알 수 없음";
 }
 
@@ -194,13 +373,21 @@ function getWeather(latitude, longitude) {
             currentWeather = weatherCodeToText(code);
             currentTemperature = temp + "°C";
 
-            document.getElementById("weatherText").innerText = currentWeather + " " + currentTemperature;
+            const weatherText = document.getElementById("weatherText");
+
+            if (weatherText) {
+                weatherText.innerText = currentWeather + " " + currentTemperature;
+            }
         })
         .catch(function() {
             currentWeather = "흐림";
             currentTemperature = "정보 없음";
 
-            document.getElementById("weatherText").innerText = "날씨 정보를 불러오지 못했습니다";
+            const weatherText = document.getElementById("weatherText");
+
+            if (weatherText) {
+                weatherText.innerText = "날씨 정보를 불러오지 못했습니다";
+            }
         });
 }
 
@@ -222,6 +409,7 @@ function getUserMoodToSongMood() {
     if (selectedMood === "설레요") return "밝음";
     if (selectedMood === "신나요") return "강렬함";
     if (selectedMood === "지쳤어요") return "몽환적";
+
     return getTimeMood();
 }
 
@@ -230,6 +418,7 @@ function getWeatherMood() {
     if (currentWeather === "눈") return "서정적";
     if (currentWeather === "맑음") return "밝음";
     if (currentWeather === "흐림") return "몽환적";
+
     return getTimeMood();
 }
 
@@ -240,6 +429,11 @@ function shuffleArray(array) {
 }
 
 function recommendSongs() {
+    if (songs.length === 0) {
+        alert("노래 목록을 아직 불러오는 중입니다.");
+        return;
+    }
+
     if (selectedMood === "") {
         alert("기분을 선택해주세요.");
         return;
@@ -263,13 +457,29 @@ function recommendSongs() {
         if (song.mood === moodFromWeather) score += 3;
         if (song.mood === moodFromTime) score += 2;
 
-        if (selectedSituation === "공부 / 작업" && (song.mood === "서정적" || song.mood === "몽환적")) score += 2;
-        if (selectedSituation === "산책 / 운동" && (song.mood === "밝음" || song.mood === "강렬함")) score += 2;
-        if (selectedSituation === "이동 중" && (song.genre === "팝" || song.genre === "댄스" || song.genre === "힙합")) score += 2;
-        if (selectedSituation === "집 / 휴식" && (song.mood === "서정적" || song.mood === "애절함")) score += 2;
+        if (selectedSituation === "공부 / 작업" && (song.mood === "서정적" || song.mood === "몽환적")) {
+            score += 2;
+        }
 
-        if (energy >= 70 && (song.mood === "밝음" || song.mood === "강렬함")) score += 2;
-        if (energy <= 30 && (song.mood === "몽환적" || song.mood === "서정적" || song.mood === "애절함")) score += 2;
+        if (selectedSituation === "산책 / 운동" && (song.mood === "밝음" || song.mood === "강렬함")) {
+            score += 2;
+        }
+
+        if (selectedSituation === "이동 중" && (song.genre === "팝" || song.genre === "댄스" || song.genre === "힙합")) {
+            score += 2;
+        }
+
+        if (selectedSituation === "집 / 휴식" && (song.mood === "서정적" || song.mood === "애절함")) {
+            score += 2;
+        }
+
+        if (energy >= 70 && (song.mood === "밝음" || song.mood === "강렬함")) {
+            score += 2;
+        }
+
+        if (energy <= 30 && (song.mood === "몽환적" || song.mood === "서정적" || song.mood === "애절함")) {
+            score += 2;
+        }
 
         return {
             song: song,
@@ -292,14 +502,11 @@ function recommendSongs() {
     const recommended = candidates.slice(0, 3);
 
     let html = `
-        <h2 style="text-align:center;">추천 결과</h2>
-
-        <div class="recommend-reason">
-            현재 선택한 기분은 <strong>${selectedMood}</strong>, 상황은 <strong>${selectedSituation}</strong>입니다.<br>
-            현재 에너지는 <strong>${energy}%</strong>입니다.<br>
-            현재 시간대 기준 분위기는 <strong>${moodFromTime}</strong>, 날씨 기준 분위기는 <strong>${moodFromWeather}</strong>로 판단했습니다.<br>
-            이 조건을 바탕으로 어울리는 노래 3곡을 추천합니다.
-        </div>
+        <h2>추천 결과</h2>
+        <p>현재 선택한 기분은 ${selectedMood}, 상황은 ${selectedSituation}입니다.</p>
+        <p>현재 에너지는 ${energy}%입니다.</p>
+        <p>현재 시간대 기준 분위기는 ${moodFromTime}, 날씨 기준 분위기는 ${moodFromWeather}로 판단했습니다.</p>
+        <p>이 조건을 바탕으로 어울리는 노래 3곡을 추천합니다.</p>
     `;
 
     recommended.forEach(function(item, index) {
@@ -307,14 +514,14 @@ function recommendSongs() {
 
         html += `
             <div class="song-card">
-                <div>
-                    <div class="song-title">${index + 1}. ${song.title} - ${song.artist}</div>
-                    <div class="song-info">
-                        ${song.language} / ${song.genre} / ${song.era} / ${song.mood}
-                    </div>
-                </div>
-                <div>
-                    <span class="tag">${song.mood}</span>
+                <h3>${index + 1}. ${song.title} - ${song.artist}</h3>
+                <p>${song.language} / ${song.genre} / ${song.era} / ${song.mood}</p>
+                <span>${song.mood}</span>
+                <div class="song-links">
+                    ${song.youtube_link ? `<a href="${song.youtube_link}" target="_blank">YouTube</a>` : ""}
+                    ${song.melon_link ? `<a href="${song.melon_link}" target="_blank">Melon</a>` : ""}
+                    ${song.apple_music_link ? `<a href="${song.apple_music_link}" target="_blank">Apple Music</a>` : ""}
+                    ${song.spotify_link ? `<a href="${song.spotify_link}" target="_blank">Spotify</a>` : ""}
                 </div>
             </div>
         `;
@@ -326,6 +533,6 @@ function recommendSongs() {
     resultBox.style.display = "block";
 }
 
-showSongs("allSongList", songs);
+loadSongsFromSql();
 updateTime();
 updateEnergyBar();
