@@ -1,7 +1,6 @@
 USE music_db;
 
-INSERT INTO songs
-(title, artist, language_type, genre, era, mood, youtube_link, melon_link, apple_music_link, spotify_link)
+INSERT INTO songs (title, artist, language_type, genre, era, mood, youtube_link, melon_link, apple_music_link, spotify_link)
 VALUES
 ('순정', '코요태', 'KPOP', '댄스', '1990년대', '쓸쓸함', 'https://www.youtube.com/watch?v=MHCBoNhQmCk', 'https://www.melon.com/song/detail.htm?songId=91310', 'https://music.apple.com/kr/album/%EC%88%9C%EC%A0%95/1419892104?i=1419892108', 'https://open.spotify.com/track/72BBOHxdKWlaRZ3lZZdeg6'),
 ('Y', '프리스타일', 'KPOP', '알앤비', '2000년대', '쓸쓸함', 'https://www.youtube.com/watch?v=dYIT_jeUBKg', 'https://www.melon.com/song/detail.htm?songId=531840', 'https://music.apple.com/kr/album/y-please-tell-me-why/1547829788?i=1547829793', 'https://open.spotify.com/track/1nk9moKBnrWMsXoHxnaeJd'),
