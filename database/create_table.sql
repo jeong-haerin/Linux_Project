@@ -9,11 +9,11 @@ CREATE TABLE songs (
     title VARCHAR(100) NOT NULL,
     artist VARCHAR(100) NOT NULL,
     language_type VARCHAR(50),
-    genre VARCHAR(50),
+    genre VARCHAR(100),
     era VARCHAR(50),
-    mood VARCHAR(50),
-    youtube_link VARCHAR(300),
-    melon_link VARCHAR(300),
-    apple_music_link VARCHAR(300),
-    spotify_link VARCHAR(300)
+    mood VARCHAR(100),
+    youtube_link VARCHAR(500),
+    melon_link VARCHAR(500),
+    apple_music_link VARCHAR(500),
+    spotify_link VARCHAR(500)
 );
