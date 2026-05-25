@@ -6,8 +6,8 @@ DROP TABLE IF EXISTS songs;
 
 CREATE TABLE songs (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
-    artist VARCHAR(100) NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    artist VARCHAR(200) NOT NULL,
     language_type VARCHAR(50),
     genre VARCHAR(100),
     era VARCHAR(50),
