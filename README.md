@@ -29,6 +29,7 @@
 
 ## 프로젝트 구조
 
+```text
 Linux_Project/
 │
 ├─ app.py
@@ -46,3 +47,4 @@ Linux_Project/
 │
 └─ templates/
     └─ index.html
+```
