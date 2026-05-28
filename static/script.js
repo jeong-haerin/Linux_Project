@@ -477,11 +477,11 @@ function recommendSongs() {
             score += 2;
         }
 
-        if (energy >= 70 && (song.mood === "밝음" || song.mood === "강렬함")) {
+        if (energy >= 4 && (song.mood === "밝음" || song.mood === "강렬함")) {
             score += 2;
         }
 
-        if (energy <= 30 && (song.mood === "몽환적" || song.mood === "서정적" || song.mood === "애절함")) {
+        if (energy <= 2 && (song.mood === "몽환적" || song.mood === "서정적" || song.mood === "애절함")) {
             score += 2;
         }
 
@@ -508,7 +508,7 @@ function recommendSongs() {
     let html = `
         <h2>추천 결과</h2>
         <p>현재 선택한 기분은 ${selectedMood}, 상황은 ${selectedSituation}입니다.</p>
-        <p>현재 에너지는 ${energy}%입니다.</p>
+        <p>현재 에너지는 ${energy} 단계입니다.</p>
         <p>현재 시간대 기준 분위기는 ${moodFromTime}, 날씨 기준 분위기는 ${moodFromWeather}로 판단했습니다.</p>
         <p>이 조건을 바탕으로 어울리는 노래 3곡을 추천합니다.</p>
     `;
