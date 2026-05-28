@@ -311,8 +311,6 @@ function updateEnergyBar() {
 
     const value = energyRange.value;
     energyValue.innerText = `에너지 단계 ${value}`;
-
-    const percent = (value / 5) * 100;
     
     energyRange.style.background = "#7b70d7";
 }
