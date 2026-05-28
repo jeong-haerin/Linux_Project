@@ -312,7 +312,9 @@ function updateEnergyBar() {
     const value = energyRange.value;
 
     energyValue.innerText = value;
-    energyRange.style.background = `linear-gradient(to right, #7b70d7 ${value}%, #e4e0f2 ${value}%)`;
+
+    const percent = (value / 5) * 100;
+    energyRange.style.background = `linear-gradient(to right, #7b70d7 ${percent}%, #e4e0f2 ${percent}%)`;
 }
 
 function updateTime() {
