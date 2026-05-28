@@ -310,7 +310,7 @@ function updateEnergyBar() {
     }
 
     const value = energyRange.value;
-    energyValue.innerText = `에너지 단계 ${value} / 5`;
+    energyValue.innerText = `에너지 단계 ${value}`;
 
     const percent = (value / 5) * 100;
     
