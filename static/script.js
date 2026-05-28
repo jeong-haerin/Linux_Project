@@ -313,14 +313,8 @@ function updateEnergyBar() {
     energyValue.innerText = `에너지 단계 ${value} / 5`;
 
     const percent = (value / 5) * 100;
-
-    energyRange.style.background = `linear-gradient(
-        to right,
-        #7b70d7 0%,
-        #7b70d7 ${percent}%,
-        #e4e0f2 ${percent}%,
-        #e4e0f2 100%
-    )`;
+    
+    energyRange.style.background = "#7b70d7";
 }
 
 function updateTime() {
