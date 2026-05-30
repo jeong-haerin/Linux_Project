@@ -1,4 +1,1 @@
 Flask
-PyMySQL
-requests
-python-dotenv
